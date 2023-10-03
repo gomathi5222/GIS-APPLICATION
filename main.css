@@ -1,0 +1,105 @@
+html,
+body,
+#viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#title {
+    margin-right: 650px;
+    color: #d4241a;
+    border: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 24px;
+    font-weight: bolder;
+    text-shadow: 2px 2px #fffffff1;
+    /* text-indent: 1px; */
+}
+
+@media screen and (min-width: 320px) {
+    #title {
+        margin-right: 50px;
+        font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 425px) {
+    #title {
+        margin-right: 75px;
+        color: #d4241a;
+        border: none;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        font-weight: bolder;
+        text-shadow: 2px 2px #fffffff1;
+        background-color: #f1efea9d;
+    }
+}
+
+@media screen and (min-width: 700px) {
+    #title {
+        margin-right: 280px;
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #title {
+        margin-right: 400px;
+        font-size: 18px;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    #title {
+        margin-right: 650px;
+        font-size: 22px;
+    }
+}
+
+.ActionButtons {
+    color: #000000;
+    cursor: pointer;
+    font-weight: bold;
+    height: 30px;
+    /* padding: 5px; */
+    width: 30px;
+    border: 0;
+    background-color: #f7f5f0 !important;
+
+}
+#divbtn{
+    margin-left: 150px;
+}
+
+#Banks {
+    background: url("./img/bank-svgrepo-com.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#Atm {
+    background: url("./img/atm-card-svgrepo-com.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#Restaurants {
+    background: url("./img/city-cityscape-dinner-svgrepo-com.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#Bustops {
+    background: url("./img/busstop-svgrepo-com.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#clear {
+    background: url("./img/delete-location-svgrepo-com.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
