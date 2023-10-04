@@ -17,7 +17,10 @@ require([
     "esri/widgets/Search",
     "esri/widgets/Legend", "esri/widgets/ScaleBar", "esri/layers/GroupLayer",
     "esri/widgets/LayerList",
-
+    "esri/Graphic",
+    "esri/rest/route",
+    "esri/rest/support/RouteParameters",
+    "esri/rest/support/FeatureSet",
 ], (
     Map,
     MapView,
@@ -35,6 +38,10 @@ require([
     Search,
     Legend, ScaleBar, GroupLayer,
     LayerList,
+    Graphic,
+    route,
+    RouteParameters,
+    FeatureSet
 ) => {
     const title = document.getElementById("title");
     var AtmBtn = document.getElementById("Atm");
@@ -1913,12 +1920,19 @@ require([
         basemap: "arcgis-navigation",
         layers: [routeLayer, demographicGroupLayer],
     });
+
     const view = new MapView({
         container: "viewDiv",
         map: map,
-        // 12.89338770155008, 74.84274638725404
+        // padding: {
+        //     right: 320 // Same value as the #sidebar width in CSS
+        // },
+
         center: [74.89707721305963, 12.965079720060636],
         zoom: 11,
+        ui: {
+            attribution: false
+        }
     });
     esriConfig.apiKey =
         "AAPK177f329c12de4ae498979677870e0f33o8JOIdohoYtL8QcdoJpH-DjxV06mmNplIZg9i1OGXb2yPc9bbWfZBq4Fvtqg4Y6N";
@@ -1952,8 +1966,97 @@ require([
         banks.visible = false;
         Restaurants.visible = false;
         Busstops.visible = false;
+
+    });
+    const routeUrl =
+        "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World";
+    view.on("click", function (event) {
+        if (view.graphics.length === 0) {
+            addGraphic("origin", event.mapPoint);
+        } else if (view.graphics.length === 1) {
+            addGraphic("destination", event.mapPoint);
+
+            getRoute(); // Call the route service
+        } else {
+            view.graphics.removeAll();
+            addGraphic("origin", event.mapPoint);
+        }
     });
 
+    function addGraphic(type, point) {
+        const graphic = new Graphic({
+            symbol: {
+                type: "simple-marker",
+                color: type === "origin" ? "white" : "black",
+                size: "8px",
+            },
+            geometry: point,
+        });
+        view.graphics.add(graphic);
+    }
+
+    function getRoute() {
+        const routeParams = new RouteParameters({
+            stops: new FeatureSet({
+                features: view.graphics.toArray(),
+            }),
+            returnDirections: true,
+        });
+
+        route
+            .solve(routeUrl, routeParams)
+            .then(function (data) {
+                data.routeResults.forEach(function (result) {
+                    result.route.symbol = {
+                        type: "simple-line",
+                        color: [5, 150, 255],
+                        width: 3,
+                    };
+                    view.graphics.add(result.route);
+                    setTimeout(function () {
+                        view.graphics.removeAll(result.route)
+                    }, 10 * 1000)
+                });
+
+                // Display directions
+                if (data.routeResults.length > 0) {
+                    const directions = document.createElement("ol");
+                    directions.classList =
+                        "esri-widget esri-widget--panel esri-directions__scroller";
+                    directions.style.marginTop = "0";
+                    directions.style.padding = "15px 15px 15px 30px";
+                    const features = data.routeResults[0].directions.features;
+
+                    // Show each direction
+                    const btn = document.createElement('button')
+                    features.forEach(function (result, i) {
+                        const direction = document.createElement("li");
+
+                        direction.innerHTML =
+                            result.attributes.text +
+                            " (" +
+                            result.attributes.length.toFixed(2) +
+                            " miles)";
+                        directions.appendChild(direction);
+                    });
+                    directions.appendChild(btn)
+                    btn.id = 'btn';
+                    btn.innerText = 'click'
+                    btn.addEventListener('click', () => {
+                        window.print();
+                    })
+                    view.ui.empty("bottom-right");
+                    view.ui.add(directions, "bottom-right");
+                    setTimeout(() => {
+                        view.ui.remove(directions, "bottom-right")
+                    }, 10 * 1000)
+                }
+            })
+
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
     view.when(() => {
         const layerList = new LayerList({
             view: view,
@@ -1969,9 +2072,25 @@ require([
                 }
             }
         });
+        const layerExpand = new Expand({
+            view: view,
+            content: layerList,
+            expandTooltip: "LayerList",
+            expandIcon: "layer",
 
-        view.ui.add(layerList, "top-right");
-        view.ui.move({ component: layerList, position: "top-right", index: 1 });
+            mode: "auto",
+            label: "LayerList",
+        });
+        layerList.watch("activeBasemap", () => {
+            const mobileSize =
+                view.heightBreakpoint === "xsmall" ||
+                view.widthBreakpoint === "xsmall";
+            if (mobileSize) {
+                dirExpand.collapse();
+            }
+        });
+        view.ui.add(layerExpand, "top-right");
+        view.ui.move({ component: layerExpand, position: "top-left", index: 2 });
     });
     view.on("click", function (event) {
         console.log([event.mapPoint.latitude, event.mapPoint.longitude]);
@@ -2341,6 +2460,6 @@ require([
         ],
         "top-right"
     );
-    view.ui.add([fullscreen, scaleBar,], "bottom-right");
+    // view.ui.add(scaleBar, "bottom-right", { index:2});
     view.ui.add([locateWidget, "Atm", "Banks", "Restaurants", "Bustops", "clear",], "bottom-left");
 });

@@ -6,6 +6,16 @@ body,
     height: 100%;
     width: 100%;
 }
+/* #btn{
+    background-image: './img/download.svg' !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+} */
+.esri-directions__scroller {
+    /* margin-top: 150px !important; */
+     color: #d4241a !important;
+     height: fit-content !important;
+}
 
 #title {
     margin-right: 650px;
@@ -70,7 +80,8 @@ body,
     background-color: #f7f5f0 !important;
 
 }
-#divbtn{
+
+#divbtn {
     margin-left: 150px;
 }
 
