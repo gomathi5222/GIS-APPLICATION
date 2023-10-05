@@ -1970,7 +1970,7 @@ require([
     });
     const routeUrl =
         "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World";
-    view.on("immediate-click", function (event) {
+    view.on("double-click", function (event) {
         if (view.graphics.length === 0) {
             addGraphic("origin", event.mapPoint);
         } else if (view.graphics.length === 1) {
