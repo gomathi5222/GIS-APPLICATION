@@ -6,6 +6,7 @@ body,
     height: 100%;
     width: 100%;
 }
+
 /* #btn{
     background-image: './img/download.svg' !important;
     background-repeat: no-repeat !important;
@@ -13,15 +14,15 @@ body,
 } */
 .esri-directions__scroller {
     /* margin-top: 150px !important; */
-     color: #d4241a !important;
-     height: fit-content !important;
+    color: #d4241a !important;
+    height: fit-content !important;
 }
 
 #title {
     margin-right: 650px;
     color: #d4241a;
     border: none;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 24px;
     font-weight: bolder;
     text-shadow: 2px 2px #fffffff1;
@@ -40,7 +41,6 @@ body,
         margin-right: 75px;
         color: #d4241a;
         border: none;
-        font-family: Arial, Helvetica, sans-serif;
         font-size: 14px;
         font-weight: bolder;
         text-shadow: 2px 2px #fffffff1;

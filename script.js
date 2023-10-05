@@ -1927,9 +1927,9 @@ require([
         // padding: {
         //     right: 320 // Same value as the #sidebar width in CSS
         // },
-
-        center: [74.89707721305963, 12.965079720060636],
-        zoom: 11,
+        // 12.951287049267767, 74.8720914092376
+        center: [74.8720914092376, 12.951287049267767],
+        zoom: 14,
         ui: {
             attribution: false
         }
@@ -2002,7 +2002,7 @@ require([
             }),
             returnDirections: true,
         });
-
+        let popupData;
         route
             .solve(routeUrl, routeParams)
             .then(function (data) {
@@ -2013,12 +2013,28 @@ require([
                         width: 3,
                     };
                     view.graphics.add(result.route);
+                    view.graphics.add.popupTemplate = {
+                        title: 'hi'
+                    }
+                    console.log(result.route);
+                    popupData = result.route;
                     setTimeout(function () {
                         view.graphics.removeAll(result.route)
                     }, 10 * 1000)
                 });
+                console.log(popupData.attributes.Total_Kilometers);
+                // view.popup.viewModel.autoOpenEnabled = false;
+                // view.on("click", function (event) {
+                view.popup.open({
+                    title: `<p style='color:red font-size:12px'>${popupData.attributes.Name}</p>`,
+                    content: `<div>
+                        <p><b>Distance in Kilometers :</b> ${(popupData.attributes.Total_Kilometers).toFixed(3)} Kms</p>
+                        <p><b>Distance in Miles :</b> ${(popupData.attributes.Total_Miles).toFixed(3)} miles</p>
+                      </div>`
+                });
+                // });
 
-                // Display directions
+                view.popup.currentDockPosition = 'top-center';
                 if (data.routeResults.length > 0) {
                     const directions = document.createElement("ol");
                     directions.classList =
@@ -2039,11 +2055,16 @@ require([
                             " miles)";
                         directions.appendChild(direction);
                     });
+                    const title = document.createElement('div')
+                    directions.prepend(title);
+                    title.innerHTML = `<p style="font-size: 14px; color: black"><b>Route Details</b></p>
+                    `;
                     directions.appendChild(btn)
                     btn.id = 'btn';
-                    btn.innerText = 'click'
+                    btn.innerText = 'Close'
                     btn.addEventListener('click', () => {
-                        window.print();
+                        // window.print();
+                        view.ui.remove(directions, "bottom-right")
                     })
                     view.ui.empty("bottom-right");
                     view.ui.add(directions, "bottom-right");
@@ -2051,6 +2072,7 @@ require([
                         view.ui.remove(directions, "bottom-right")
                     }, 10 * 1000)
                 }
+
             })
 
             .catch(function (error) {
@@ -2460,6 +2482,6 @@ require([
         ],
         "top-right"
     );
-    // view.ui.add(scaleBar, "bottom-right", { index:2});
+    // view.ui.add(scaleBar, "bottom-right",{index:2});
     view.ui.add([locateWidget, "Atm", "Banks", "Restaurants", "Bustops", "clear",], "bottom-left");
 });
