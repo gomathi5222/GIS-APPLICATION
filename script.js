@@ -1970,7 +1970,7 @@ require([
     });
     const routeUrl =
         "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World";
-    view.on("click", function (event) {
+    view.on("immediate-click", function (event) {
         if (view.graphics.length === 0) {
             addGraphic("origin", event.mapPoint);
         } else if (view.graphics.length === 1) {
@@ -2013,9 +2013,7 @@ require([
                         width: 3,
                     };
                     view.graphics.add(result.route);
-                    view.graphics.add.popupTemplate = {
-                        title: 'hi'
-                    }
+
                     console.log(result.route);
                     popupData = result.route;
                     setTimeout(function () {
@@ -2023,8 +2021,7 @@ require([
                     }, 10 * 1000)
                 });
                 console.log(popupData.attributes.Total_Kilometers);
-                // view.popup.viewModel.autoOpenEnabled = false;
-                // view.on("click", function (event) {
+
                 view.popup.open({
                     title: `<p style='color:red font-size:12px'>${popupData.attributes.Name}</p>`,
                     content: `<div>
@@ -2032,9 +2029,8 @@ require([
                         <p><b>Distance in Miles :</b> ${(popupData.attributes.Total_Miles).toFixed(3)} miles</p>
                       </div>`
                 });
-                // });
 
-                view.popup.currentDockPosition = 'top-center';
+
                 if (data.routeResults.length > 0) {
                     const directions = document.createElement("ol");
                     directions.classList =
@@ -2062,15 +2058,15 @@ require([
                     directions.appendChild(btn)
                     btn.id = 'btn';
                     btn.innerText = 'Close'
-                    btn.addEventListener('click', () => {
-                        // window.print();
-                        view.ui.remove(directions, "bottom-right")
-                    })
                     view.ui.empty("bottom-right");
                     view.ui.add(directions, "bottom-right");
                     setTimeout(() => {
-                        view.ui.remove(directions, "bottom-right")
+                        view.ui.remove(directions, "bottom-right");
                     }, 10 * 1000)
+                    btn.addEventListener('click', () => {
+                        // window.print();
+                        view.ui.remove(directions, "bottom-right");
+                    })
                 }
 
             })
@@ -2112,9 +2108,9 @@ require([
             }
         });
         view.ui.add(layerExpand, "top-right");
-        view.ui.move({ component: layerExpand, position: "top-left", index: 2 });
+        view.ui.move({ component: layerExpand, position: "top-left", index: 3 });
     });
-    view.on("click", function (event) {
+    view.on("double-click", function (event) {
         console.log([event.mapPoint.latitude, event.mapPoint.longitude]);
     });
     let homeWidget = new Home({
@@ -2473,15 +2469,14 @@ require([
         view: view,
     });
 
-    view.ui.add([SearchExpand, bgExpand, dirExpand, homeWidget, compass,], "top-left");
+    view.ui.add([SearchExpand, locateWidget, bgExpand, dirExpand, homeWidget, compass,], "top-left");
     view.ui.add(
         [
             title,
             fullscreen,
-            locateWidget,
         ],
         "top-right"
     );
-    // view.ui.add(scaleBar, "bottom-right",{index:2});
-    view.ui.add([locateWidget, "Atm", "Banks", "Restaurants", "Bustops", "clear",], "bottom-left");
+    view.ui.add(scaleBar, "bottom-right",{index:2});
+    view.ui.add(["Atm", "Banks", "Restaurants", "Bustops", "clear",], "bottom-left");
 });
