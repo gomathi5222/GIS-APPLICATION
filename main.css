@@ -18,6 +18,38 @@ body,
     height: fit-content !important;
 }
 
+#sideBar--btn {
+    background: url("./img/sidebar.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 30px;
+    /* padding: 5px; */
+    width: 30px;
+    border: 0;
+    background-color: #f1efea9d;
+
+}
+
+#logo--city {
+    height: 40px;
+    width: 120px
+}
+
+#logo--city--title {
+    width: 24pt;
+    height: 24pt;
+    border-radius: 50px;
+    border: 0px solid #d4241a;
+}
+
+#offcanvaslabel {
+    color: #d4241a;
+    border: none;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bolder;
+    text-shadow: 1px 0px #ec1c1cf1;
+}
+
 #title {
     margin-right: 650px;
     color: #d4241a;

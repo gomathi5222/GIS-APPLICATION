@@ -49,6 +49,8 @@ require([
     var RestaurantBtn = document.getElementById("Restaurants");
     var BusBtn = document.getElementById("Bustops");
     var clear = document.getElementById("clear");
+    const sideBarBtn = document.getElementById('sideBar--btn');
+   
     const routeLayer = new RouteLayer();
     // btnToggle Start
     const AtmCenters = new FeatureLayer({
@@ -2449,6 +2451,7 @@ require([
             dirExpand.collapse();
         }
     });
+
     let legend = new Legend({
         view: view,
     });
@@ -2468,15 +2471,16 @@ require([
     let scaleBar = new ScaleBar({
         view: view,
     });
-
+    // view.ui.add({ component: sideBarBtn, position: 'top-left', index: 0 });
     view.ui.add([SearchExpand, locateWidget, bgExpand, dirExpand, homeWidget, compass,], "top-left");
     view.ui.add(
         [
             title,
             fullscreen,
+            sideBarBtn
         ],
         "top-right"
     );
-    view.ui.add(scaleBar, "bottom-right",{index:2});
+    view.ui.add(scaleBar, "bottom-right", { index: 2 });
     view.ui.add(["Atm", "Banks", "Restaurants", "Bustops", "clear",], "bottom-left");
 });
