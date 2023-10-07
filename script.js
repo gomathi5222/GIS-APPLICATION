@@ -56,6 +56,7 @@ require([
   const routeLayer = new RouteLayer();
   // btnToggle Start
   const AtmCenters = new FeatureLayer({
+    id: 1,
     url: "https://services3.arcgis.com/BwZSbW2kx9yDHDBi/arcgis/rest/services/Mangalore_Feb6/FeatureServer/28",
     renderer: {
       type: "simple", // autocasts as new SimpleRenderer()
@@ -1726,6 +1727,7 @@ require([
         },
       ],
     },
+
     renderer: {
       type: "simple", // autocasts as new SimpleRenderer()
       symbol: {
@@ -2073,21 +2075,162 @@ require([
         console.log(error);
       });
   }
+  async function defineActions(event) {
+    const item = event.item;
+    await item.layer.when();
+    // console.log(item);
+    if (item.layer.type != "group") {
+      item.panel = {
+        content: "legend",
+        open: true,
+      };
+    }
+    if (item.layer.type == "group") {
+      item.actionsSections = [
+        [
+          {
+            title: "Go to full extent",
+            className: "esri-icon-zoom-out-fixed",
+            id: "full-extent",
+          },
+          // {
+          //   title: "Layer information",
+          //   className: "esri-icon-description",
+          //   id: "information",
+          // },
+        ],
+        //   [
+        //     {
+        //       title: "Increase opacity",
+        //       className: "esri-icon-up",
+        //       id: "increase-opacity",
+        //     },
+        //     {
+        //       title: "Decrease opacity",
+        //       className: "esri-icon-down",
+        //       id: "decrease-opacity",
+        //     },
+        //   ],
+      ];
+    }
+  }
   view.when(() => {
     const layerList = new LayerList({
       view: view,
+      selectionEnabled: true,
+      multipleSelectionEnabled: true,
+      listItemCreatedFunction: defineActions,
+    });
 
-      listItemCreatedFunction: (event) => {
-        const item = event.item;
-        // console.log(item);
-        if (item.layer.type != "group") {
-          // don't show legend twice
-          item.panel = {
-            content: "legend",
-            open: true,
-          };
-        }
-      },
+    layerList.on("trigger-action", (event) => {
+      // The layer visible in the view at the time of the trigger.
+      //   waterTreament,
+      //   TELEPHONE_EXCHANGE,
+      //   social_club,
+      //   shopping,
+      //   sewerage_plants,
+      //   reservoirs,
+      //   Religious_places,
+      //   Railway_mangalore,
+      //   post_office,
+      //   pertrol_mangalore,
+      //   pathlab_mangalore,
+      //   parkgarden_mangalore,
+      //   medicals_mangalore,
+      //   Market_mangalore,
+      //   Hotel_mangalore,
+      //   heritage_mangalore,
+      //   govnmentOffice_mangalore,
+      //   Gasagency_mangalore,
+      //   Entertainment_mangalore,
+      //   electric_substations,
+      //   electionBooth_mangalore,
+      //   education_mangalore,
+      //   Daycarecentre_mangalore,
+      //   Crematorium_mangalore,
+      //   ASI_protected_mangalore,
+      //   Airport_Mangalore,
+      let visibleLayer = AtmCenters;
+      //   if (AtmCenters.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer = AtmCenters;
+      //   } else if (banks.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer = banks;
+      //   } else if (ASI_protected_mangalore.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer = ASI_protected_mangalore;
+      //   } else if (Crematorium_mangalore.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer = Crematorium_mangalore;
+      //   } else if (Daycarecentre_mangalore.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer = Daycarecentre_mangalore;
+      //   } else if (education_mangalore.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer = education_mangalore;
+      //   } else if (electric_substations.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer = electric_substations;
+      //   } else if (electionBooth_mangalore.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer = electionBooth_mangalore;
+      //   } else if (Entertainment_mangalore.visible) {
+      //     console.log("hi");
+
+      //     visibleLayer.Entertainment_mangalore;
+      //   } else if (Gasagency_mangalore.visible) {
+      //     visibleLayer = Gasagency_mangalore;
+      //   } else if (Hotel_mangalore.visible) {
+      //     visibleLayer = Hotel_mangalore;
+      //   } else if (Market_mangalore.visible) {
+      //     visibleLayer = Market_mangalore;
+      //   } else if (Railway_mangalore.visible) {
+      //     visibleLayer = Railway_mangalore;
+      //   } else if (Religious_places.visible) {
+      //     visibleLayer = Religious_places;
+      //   } else if (Restaurants.visible) {
+      //     visibleLayer = Restaurants;
+      //   } else if (RouteLayer.visible) {
+      //     visibleLayer = RouteLayer;
+      //   } else if (TELEPHONE_EXCHANGE.visible) {
+      //     visibleLayer = TELEPHONE_EXCHANGE;
+      //   } else if (waterTreament.visible) {
+      //     visibleLayer = waterTreament;
+      //   }
+      //   else {
+      //     visibleLayer = AtmCenters;
+      //   }
+
+      // Capture the action id.
+
+      const id = event.action.id;
+      //   console.log(id);
+
+      if (id === "full-extent") {
+        // if the full-extent action is triggered then navigate
+        // to the full extent of the visible layer
+
+        // if ((id = 1)) {
+        view.goTo(visibleLayer.fullExtent).catch((error) => {
+          if (error.name != "AbortError") {
+            console.error(error);
+          }
+        });
+        // }
+      } else if (id === "information") {
+        // if the information action is triggered, then
+        // open the item details page of the service layer
+        window.open(visibleLayer.url);
+      }
     });
     const layerExpand = new Expand({
       view: view,
@@ -2098,6 +2241,7 @@ require([
       mode: "auto",
       label: "LayerList",
     });
+
     layerList.watch("activeBasemap", () => {
       const mobileSize =
         view.heightBreakpoint === "xsmall" || view.widthBreakpoint === "xsmall";
@@ -2108,9 +2252,9 @@ require([
     view.ui.add(layerExpand, "top-right");
     view.ui.move({ component: layerExpand, position: "top-left", index: 3 });
   });
-  view.on("double-click", function (event) {
-    console.log([event.mapPoint.latitude, event.mapPoint.longitude]);
-  });
+  //   view.on("double-click", function (event) {
+  //     console.log([event.mapPoint.latitude, event.mapPoint.longitude]);
+  //   });
   let homeWidget = new Home({
     view: view,
   });
