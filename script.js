@@ -50,7 +50,7 @@ require([
     var BusBtn = document.getElementById("Bustops");
     var clear = document.getElementById("clear");
     const sideBarBtn = document.getElementById('sideBar--btn');
-   
+
     const routeLayer = new RouteLayer();
     // btnToggle Start
     const AtmCenters = new FeatureLayer({
@@ -1918,6 +1918,8 @@ require([
         ],
 
     });
+    esriConfig.apiKey =
+        "AAPK177f329c12de4ae498979677870e0f33o8JOIdohoYtL8QcdoJpH-DjxV06mmNplIZg9i1OGXb2yPc9bbWfZBq4Fvtqg4Y6N";
     const map = new Map({
         basemap: "arcgis-navigation",
         layers: [routeLayer, demographicGroupLayer],
@@ -1926,18 +1928,11 @@ require([
     const view = new MapView({
         container: "viewDiv",
         map: map,
-        // padding: {
-        //     right: 320 // Same value as the #sidebar width in CSS
-        // },
-        // 12.951287049267767, 74.8720914092376
         center: [74.8720914092376, 12.951287049267767],
         zoom: 14,
-        ui: {
-            attribution: false
-        }
+
     });
-    esriConfig.apiKey =
-        "AAPK177f329c12de4ae498979677870e0f33o8JOIdohoYtL8QcdoJpH-DjxV06mmNplIZg9i1OGXb2yPc9bbWfZBq4Fvtqg4Y6N";
+    view.ui.remove("attribution");
     AtmBtn?.addEventListener("click", function (e) {
         e.preventDefault();
         console.log("clicked");
